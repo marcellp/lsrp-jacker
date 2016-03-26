@@ -254,15 +254,10 @@ void unscramble(const char *text)
 		}
 	}
 
-	if( unscrambled_word != -1)
-		pprintf("%s -> %s (id %d)", text, strings[unscrambled_word][0], unscrambled_word);
-
 	if (unscrambled_word == -1)
 		sprintf_s(buf, 128, "/uns %s", text_arr);
 	else
 		sprintf_s(buf, 128, "/uns %s", strings[unscrambled_word][0]);
-
-	pprintf(buf);
 	
 	SF->getSAMP()->getPlayers()->pLocalPlayer->Say(buf);
 	return;
