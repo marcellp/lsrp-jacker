@@ -11,7 +11,7 @@ static int comp(const void *a, const void *b)
 		0;
 }
 
-void unscramble(const char *text)
+static void unscramble(const char *text)
 {
 	char buf[128];
 	char text_arr[16];
