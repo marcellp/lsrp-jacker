@@ -19,9 +19,9 @@ void pprintf(const char *format, ...)
 
 void CALLBACK cmd_help(std::string param)
 {
-	char buf[512];
+	char buf[1024];
 
-	sprintf_s(buf, 512,
+	sprintf_s(buf, 1024,
 		PROGRAM_NAME " " PROGRAM_VERSION "\n"
 		"Copyright (c) 2016 " PROGRAM_AUTHORS "\n"
 		"\n"
