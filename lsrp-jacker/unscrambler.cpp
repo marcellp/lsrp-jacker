@@ -271,21 +271,22 @@ bool CALLBACK hook_get_tdstring(stRakNetHookParams* params)
 
 	int sscanf_result;
 	char unscramble_string[16];
+
 	static char last_unscramble_string[16];
 
 	if (params->packetId == RPC_ScrTextDrawSetString) {
 		params->bitStream->ResetReadPointer();
 		params->bitStream->Read(td_id);
+		params->bitStream->Read(td_len);
+		params->bitStream->Read(td_text, td_len);
+		td_text[td_len] = '\0';
 
-		if (td_id == 2049) {
-			params->bitStream->Read(td_len);
-			params->bitStream->Read(td_text, td_len);
-			td_text[td_len] = '\0';
+		if (!strncmp("~y~/(u", td_text, 6)) {
 			sscanf_result = sscanf_s(td_text,
 				"~y~/(uns)cramble ~w~<unscrambled word>~r~ to unscramble the word.~n~\"~w~%[^~]~r~\".",
 				unscramble_string, 16);
 
-			if (sscanf_result == 1 && strcmp(unscramble_string, last_unscramble_string) != 0 ) {
+			if (sscanf_result == 1 && strcmp(unscramble_string, last_unscramble_string) != 0) {
 				strcpy_s(last_unscramble_string, 16, unscramble_string);
 				unscramble(unscramble_string);
 			}
