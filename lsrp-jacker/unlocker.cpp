@@ -12,18 +12,17 @@ void CALLBACK cmd_noeject(std::string params)
 		pprintf("{FF0000}RemovePlayerFromVehicle NOP turned off. You will be ejected.");
 }
 
-void CALLBACK cmd_open_vehicle(std::string param)
+int get_closet_vehicle_to_player(stVehiclePool *vehs)
 {
 	// Temporary position (loop), player position.
 	CVector tpos, ppos;
 
+	// Vehicle data structures.
+	vehicle_info *veh = NULL;
+
 	// Initialize some values for the distance loop.
 	float distance = INFINITE;
 	int closest_car = -1;
-
-	// Vehicle data structures.
-	stVehiclePool *vehs = SF->getSAMP()->getVehicles();
-	vehicle_info *veh = NULL;
 
 	// Get the player's current position.
 	actor_info *me = SF->getSAMP()->getPlayers()->pLocalPlayer->pSAMP_Actor->pGTA_Ped;
@@ -48,8 +47,17 @@ void CALLBACK cmd_open_vehicle(std::string param)
 	}
 
 	if (distance > 10.0)
-		return pprintf("{FF0000}You are not near a vehicle.");
+		return -1;
 
+	return closest_car;
+}
+
+void CALLBACK cmd_open_vehicle(std::string param)
+{
+	// Vehicle data structures.
+	stVehiclePool *vehs = SF->getSAMP()->getVehicles();
+	int closest_car = get_closet_vehicle_to_player(vehs);
+	
 	//Unlock the vehicle (using opcode #020A is less idiomatic).
 	vehs->pSAMP_Vehicle[closest_car]->iIsLocked = 0;
 	vehs->pGTA_Vehicle[closest_car]->door_status = 1;
