@@ -59,10 +59,15 @@ void CALLBACK cmd_open_vehicle(std::string param)
 	int closest_car = get_closet_vehicle_to_player(vehs);
 	
 	//Unlock the vehicle (using opcode #020A is less idiomatic).
-	vehs->pSAMP_Vehicle[closest_car]->iIsLocked = 0;
-	vehs->pGTA_Vehicle[closest_car]->door_status = 1;
+	if (closest_car != -1) {
+		vehs->pSAMP_Vehicle[closest_car]->iIsLocked = 0;
+		vehs->pGTA_Vehicle[closest_car]->door_status = 1;
 
-	pprintf("{00FF00}Car #%d (%d) unlocked.", closest_car, vehs->GetCarHandleFromSAMPCarID(closest_car));
+		pprintf("{00FF00}Car #%d (%d) unlocked.", closest_car, vehs->GetCarHandleFromSAMPCarID(closest_car));
+	}
+	else {
+		pprintf("{FF0000}There are no cars nearby.");
+	}
 }
 
 bool CALLBACK hook_do_not_remove(stRakNetHookParams* params)
