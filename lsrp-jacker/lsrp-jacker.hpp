@@ -1,6 +1,8 @@
 #pragma once
 
 #include <windows.h>
+#pragma comment (lib,"User32.lib")
+
 #include <string>
 #include <assert.h>
 #include <process.h>
