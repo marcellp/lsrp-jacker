@@ -12,6 +12,19 @@ void CALLBACK cmd_noeject(std::string params)
 		pprintf("{FF0000}RemovePlayerFromVehicle NOP turned off. You will be ejected.");
 }
 
+bool convert_int(const char *str, int *val, int base)
+{
+	char *tmp;
+
+	errno = 0;
+	*val = strtol(str, &tmp, 10);
+
+	if (tmp == str || *tmp != '\0' || ((*val == LONG_MIN || *val == LONG_MAX) && errno == ERANGE))
+		return false;
+	else
+		return true;
+}
+
 int get_closet_vehicle_to_player(stVehiclePool *vehs)
 {
 	// Temporary position (loop), player position.
@@ -68,6 +81,42 @@ void CALLBACK cmd_open_vehicle(std::string param)
 	else {
 		pprintf("{FF0000}There are no cars nearby.");
 	}
+}
+
+void CALLBACK cmd_breakin(std::string param)
+{
+	stOnFootData sync;
+	stVehiclePool *vehs = SF->getSAMP()->getVehicles();
+	int closest_car = get_closet_vehicle_to_player(vehs);
+	int packets;
+
+	if (closest_car == -1)
+		return pprintf("{FF0000}There are no cars nearby.");
+
+	if (!convert_int(param.c_str(), &packets, 10) || packets <= 0)
+		return pprintf("/j-breakin [number of packets]");
+
+	memset(&sync, 0, sizeof(stOnFootData));
+
+	for (int i = 0; i < packets*2; i++) {
+		sync = SF->getSAMP()->getPlayers()->pLocalPlayer->onFootData;
+
+		if (i % 2)
+			sync.sKeys = 4;
+		else
+			sync.sKeys = 0;
+
+		BitStream bsActorSync;
+		bsActorSync.Write((BYTE)ID_PLAYER_SYNC);
+		bsActorSync.Write((PCHAR)&sync, sizeof(stOnFootData));
+		SF->getRakNet()->SendPacket(&bsActorSync);
+
+		Sleep(rand() % 25);
+	}
+
+	free(&sync);
+
+	pprintf("{00FF00}%d packets sent.", packets);
 }
 
 bool CALLBACK hook_do_not_remove(stRakNetHookParams* params)

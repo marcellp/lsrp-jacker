@@ -61,6 +61,7 @@ void CALLBACK mainloop()
 		SF->getSAMP()->registerChatCommand("j-l", cmd_open_vehicle);
 		SF->getSAMP()->registerChatCommand("j-noeject", cmd_noeject);
 		SF->getSAMP()->registerChatCommand("j-ne", cmd_noeject);
+		SF->getSAMP()->registerChatCommand("j-breakin", cmd_breakin);
 		SF->getRakNet()->registerRakNetCallback(RAKHOOK_TYPE_INCOMING_RPC, hook_do_not_remove);
 		SF->getRakNet()->registerRakNetCallback(RAKHOOK_TYPE_INCOMING_RPC, hook_get_tdstring);
 
